@@ -26,7 +26,8 @@ public class Parser{
 	ParseTable pt = new ParseTable();
 	public Parser(String fileName){
 		System.out.println("File to parse : "+fileName);
-		System.out.println("Stack \t\tinputtokens \t\tactionlookup \t\tactionvalue \t\tvalueofLHS \t\tLengthofRHS \t\ttempstack \t\tgotolookup \t\tgotovalue \t\tStackaction \t\tParseTreeStack");
+		System.out.println("Stack \t\t\t\t\tinputtokens \t\t\tactionlookup \t\t\tactionvalue \t\tvalueofLHS \t\tLengthofRHS \t\t"
+				+ "\t\ttempstack \t\tgotolookup \t\tgotovalue \t\tStackaction \t\tParseTreeStack");
 	}
 	/*
 	* Dummy code
@@ -50,8 +51,9 @@ public class Parser{
 		*/
 		initialStack.push("0");
 		
-		System.out.println(inputtokens.toString());
+		
 		int a = 0;
+		String tempparseTreeStack = "";
 		while (!startingvalue.equalsIgnoreCase("a"))
 		{
 				createInputTokens(initialStack.lastElement(),inputtokens.element());
@@ -60,17 +62,22 @@ public class Parser{
 				if (startingvalue.equalsIgnoreCase("s") ){
 					stackaction = "push "+inputtokens.element()+actionvalue.substring(1, 2);
 					
-					
-					System.out.println(removeSpecChar(initialStack.toString()) + removeSpecChar(inputtokens.toString()) +actionlookup.toString() + actionvalue.toString() +  stackaction.toString());
-					pushStack(inputtokens.element() , actionvalue.substring(1, 2));
-					popList();
 					if (parseTreeStack.equals("") ||  inputtokens.element().equalsIgnoreCase("id"))
 					{
+						
 						parseTreeStack  = "id" + parseTreeStack ;
 					}
 					else if (inputtokens.element().matches("[a-zA-Z]")){
-						parseTreeStack  = "["+inputtokens.element() + parseTreeStack+"]" ;
+						parseTreeStack  = "["+inputtokens.element() + parseTreeStack+"]"+tempparseTreeStack ;
 					}
+					else{
+						tempparseTreeStack = parseTreeStack ;
+						//parseTreeStack = "";
+					}
+					System.out.println(removeSpecChar(initialStack.toString()) + "\t\t\t\t\t"+removeSpecChar(inputtokens.toString()) +"\t\t\t\t"+actionlookup.toString() + "\t\t\t\t"+actionvalue.toString() +  "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"+stackaction.toString()+"\t\t\t"+parseTreeStack);
+					pushStack(inputtokens.element() , actionvalue.substring(1, 2));
+					popList();
+					
 					
 				}
 				else if (startingvalue.equalsIgnoreCase("R")){
@@ -81,20 +88,21 @@ public class Parser{
 					gotolookup = "["+tempstack.lastElement()+","+valueofLHS+"]";
 					gotovalue = pt.createParseTable(valueofLHS,Integer.parseInt(tempstack.lastElement()));
 					stackaction = "push "+ valueofLHS + gotovalue;
-					System.out.println(initialStack.toString() + inputtokens.toString() +actionlookup.toString() + actionvalue.toString() + valueofLHS.toString() + lengthofRHS + tempstack.toString() + gotolookup.toString() + gotovalue.toString() + stackaction.toString());
-					popinitialStack(lengthofRHS*2);
-					pushStack(valueofLHS , gotovalue);
 					if (parseTreeStack.equals("") ||  inputtokens.element().equalsIgnoreCase("id"))
 					{
 						parseTreeStack  = "id" + parseTreeStack ;
 					}
-					else if (lengthofRHS == 3){
-						parseTreeStack  = "["+inputtokens.element() + parseTreeStack+"]" ;
+					else if (valueofLHS.matches("[a-zA-Z]")){
+						parseTreeStack  = "["+valueofLHS + parseTreeStack+"]" ;
 					}
+					System.out.println(initialStack.toString() +"\t\t\t\t"+ inputtokens.toString() +"\t\t\t"+actionlookup.toString() + "\t\t\t\t"+actionvalue.toString() + "\t\t\t"+valueofLHS.toString() + "\t\t\t"+lengthofRHS + "\t\t\t"+tempstack.toString() + "\t\t\t\t"+gotolookup.toString() + "\t\t\t\t"+gotovalue.toString() + "\t\t"+stackaction.toString()+"\t\t\t\t"+parseTreeStack);
+					popinitialStack(lengthofRHS*2);
+					pushStack(valueofLHS , gotovalue);
+					
 				}
 				else if (startingvalue.equalsIgnoreCase("a")){
 					actionvalue = "Accept";
-					System.out.println(initialStack.toString() + inputtokens.toString() +actionlookup.toString() + actionvalue.toString());
+					System.out.println(initialStack.toString() + "\t\t\t\t\t"+inputtokens.toString() +"\t\t\t\t"+actionlookup.toString() + "\t\t\t"+actionvalue.toString());
 				}
 				a++;
 		}
